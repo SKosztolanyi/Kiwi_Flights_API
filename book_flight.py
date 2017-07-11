@@ -15,7 +15,7 @@ def build_request_query(fly_from,
                         ascending=True,
                         flights_url='https://api.skypicker.com/flights?'):
     """Returns a concatenated string based on input values as a request query."""
-
+    
     datetime_from = datetime.strptime(date_from, '%Y-%m-%d')
     correct_format_date_from = '&dateFrom=' + datetime_from.strftime('%d/%m/%Y')
     # Calculate date of return from length of stay
@@ -26,15 +26,14 @@ def build_request_query(fly_from,
         correct_format_date_to = '&dateTo=' + datetime_to.strftime('%d/%m/%Y')
         
     request_tail = ''.join(['&booking_token=hashed%20data&offset=0&limit=5&sort=', sort,
-                            '&asc=', int(ascending)])
+                            '&asc=', str(ascending)])
     # Build final query as a string
     full_request_query = ''.join([flights_url,
-                                  'flyFrom=', fly_from,
-                                  '&to=', fly_to,
+                                  'flyFrom=' + fly_from,
+                                  '&to=' +  fly_to,
                                   correct_format_date_from,
                                   correct_format_date_to,
                                   request_tail])
-    
     return(full_request_query)
 
 def get_booking_token(request_query):
@@ -67,6 +66,7 @@ if __name__ == '__main__':
     parser.add_option('--from', action = 'store', dest = 'fly_from')
     parser.add_option('--to', action = 'store', dest = 'to')
     parser.add_option('--return', action = 'store', type = 'int', dest = 'return_in_days')
+    parser.add_option('--one-way', action = 'store_const', const = None, dest = 'return_in_days')
     # Add a group for sorting purposes in flights search response
     sort_group = OptionGroup(parser, "Sort results by category")
     sort_group.add_option('--cheapest', action = 'store_const', const = 'price', dest = 'sort')
@@ -89,7 +89,7 @@ if __name__ == '__main__':
     request_query = build_request_query(fly_from=options.fly_from,
                                         fly_to=options.to,
                                         date_from=options.date_from,
-                                        days_of_stay=options.days_of_stay, 
+                                        days_of_stay=options.return_in_days, 
                                         sort=options.sort,
                                         ascending=options.ascending,
                                         flights_url=FLIGHTS_REQUEST_HTTP)
