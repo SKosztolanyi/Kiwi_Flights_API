@@ -1,2 +1,2 @@
 # Kiwi_Flights_API
-Depository for using Kiwi Public APIs
+Depository for entry task scripts that use Kiwi Public APIs
