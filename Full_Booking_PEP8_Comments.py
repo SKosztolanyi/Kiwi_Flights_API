@@ -1,4 +1,4 @@
-#!/usr/bin python3.4
+#!/usr/bin/env python
 
 # Imports should be grouped in the following order:
 
@@ -7,7 +7,6 @@
 # local application/library specific imports
 # You should put a blank line between each group of imports.
 
-import sys
 import requests
 from datetime import datetime, timedelta
 from optparse import OptionParser, OptionGroup
@@ -46,7 +45,7 @@ def build_request_query(fly_from,
         correct_format_date_to = '&dateTo=' + datetime_to.strftime('%d/%m/%Y')
         
     request_tail = ''.join(['&booking_token=hashed%20data&offset=0&limit=5&sort=', sort,
-                            '&asc=', int(ascending)])
+                            '&asc=', str(ascending)])
     
     # Build final query as a string
     full_request_query = ''.join([flights_url,
@@ -90,6 +89,13 @@ if __name__ == '__main__':
     parser.add_option('--from', action = 'store', dest = 'fly_from')
     parser.add_option('--to', action = 'store', dest = 'to')
     parser.add_option('--return', action = 'store', type = 'int', dest = 'return_in_days')
+    parser.add_option('--one-way', action = 'store_const', const = None, dest = 'return_in_days')
+
+    # Add group for one-way or return ticket
+    #return_group = OptionGroup(parser, "One way or return ticket")
+    #return_group.add_option('--return', action = 'store', type = 'int', dest = 'return_in_days')
+    #return_group.add_option('--one-way', action = 'store_const', const = None, dest = 'return_in_days')
+    #parser.add_option_group(return_group)
     # Add a group for sorting purposes in flights search response
     sort_group = OptionGroup(parser, "Sort results by category")
     sort_group.add_option('--cheapest', action = 'store_const', const = 'price', dest = 'sort')
@@ -112,7 +118,7 @@ if __name__ == '__main__':
     request_query = build_request_query(fly_from=options.fly_from,
                                         fly_to=options.to,
                                         date_from=options.date_from,
-                                        days_of_stay=options.days_of_stay, 
+                                        days_of_stay=options.return_in_days, 
                                         sort=options.sort,
                                         ascending=options.ascending,
                                         flights_url=FLIGHTS_REQUEST_HTTP)
