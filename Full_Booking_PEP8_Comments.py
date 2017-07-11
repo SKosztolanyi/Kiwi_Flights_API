@@ -49,8 +49,8 @@ def build_request_query(fly_from,
     
     # Build final query as a string
     full_request_query = ''.join([flights_url,
-                                  'flyFrom=' + fly_from,
-                                  '&to=' +  fly_to,
+                                  'flyFrom=', fly_from,
+                                  '&to=', fly_to,
                                   correct_format_date_from,
                                   correct_format_date_to,
                                   request_tail])
